@@ -161,10 +161,38 @@ def validate_json_schema(json):
     validate(json, schema)
 
 
-def check_domain_codomain_spaces(json: Dict, ms) -> None:
+def resolve_space(space_name: str, ms: Dict, pattern: str = None) -> bool:
+    """
+    Resolve space name with pattern awareness.
+
+    Lookup hierarchy:
+    1. Global spaces (ms["Spaces"])
+    2. Pattern-specific spaces (ms["<pattern>_Spaces"])
+    3. Shared spaces
+
+    Args:
+        space_name: Name of the space to resolve
+        ms: MathSpec dictionary
+        pattern: Optional pattern name for pattern-specific lookup
+
+    Returns:
+        True if space exists, False otherwise
+    """
+    if space_name in ms["Spaces"]:
+        return True
+
+    if pattern:
+        pattern_spaces_key = f"{pattern}_Spaces"
+        if pattern_spaces_key in ms and space_name in ms[pattern_spaces_key]:
+            return True
+
+    return False
+
+
+def check_domain_codomain_spaces(json: Dict, ms, pattern: str = None) -> None:
     if "domain" in json:
         for key in json["domain"]:
-            assert key in ms["Spaces"], "{} not in spaces".format(key)
+            assert resolve_space(key, ms, pattern), "{} not in spaces".format(key)
     if "codomain" in json:
         for key in json["codomain"]:
-            assert key in ms["Spaces"], "{} not in spaces".format(key)
+            assert resolve_space(key, ms, pattern), "{} not in spaces".format(key)

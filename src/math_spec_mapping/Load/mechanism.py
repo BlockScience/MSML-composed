@@ -3,11 +3,13 @@ from ..Classes import Mechanism
 from .general import check_json_keys, check_domain_codomain_spaces
 
 
-def convert_mechanism(data: Dict, ms: Dict) -> Mechanism:
+def convert_mechanism(data: Dict, ms: Dict, pattern: str = None) -> Mechanism:
     """Function to convert dictionary to mechanism object
 
     Args:
         data (Dict): The data to convert
+        ms (Dict): MathSpec dictionary
+        pattern (str): Optional pattern name for pattern-aware resolution
 
     Returns:
         Mechanism: Mechanism object
@@ -26,7 +28,7 @@ def convert_mechanism(data: Dict, ms: Dict) -> Mechanism:
     if len(data["domain"]) == 0:
         data["domain"] = ("Empty Space",)
 
-    check_domain_codomain_spaces(data, ms)
+    check_domain_codomain_spaces(data, ms, pattern=pattern)
 
     # Copy
     data = data.copy()
@@ -57,18 +59,20 @@ def convert_mechanism(data: Dict, ms: Dict) -> Mechanism:
     return Mechanism(data), new_channels
 
 
-def load_mechanisms(ms: Dict, json: Dict) -> None:
-    """Function to load states into the new dictionary
+def load_mechanisms(ms: Dict, json: Dict, pattern: str = None) -> None:
+    """Function to load mechanisms into the new dictionary
 
     Args:
         ms (Dict): MathSpec dictionary
         json (Dict): JSON version of MathSpec to load
+        pattern (str): Optional default pattern for components without explicit pattern
     """
 
     ms["Mechanisms"] = {}
     state_update_transmission_channels = []
     for m in json["Mechanisms"]:
-        ms["Mechanisms"][m["name"]], new_channels = convert_mechanism(m, ms)
+        component_pattern = m.get("pattern", pattern)
+        ms["Mechanisms"][m["name"]], new_channels = convert_mechanism(m, ms, pattern=component_pattern)
         state_update_transmission_channels.extend(new_channels)
 
         key = m["name"]

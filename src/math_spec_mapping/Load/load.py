@@ -36,6 +36,10 @@ def load_from_json(json: Dict, spec_path=None) -> MathSpec:
     # Validate against the JSON schema
     validate_json_schema(json)
 
+    # Extract pattern metadata for context throughout loading
+    pattern_metadata = json.get("pattern_metadata", {})
+    primary_pattern = pattern_metadata.get("primary_pattern")
+
     ms = {}
 
     # Do loading one by one to transfer the json
@@ -44,14 +48,14 @@ def load_from_json(json: Dict, spec_path=None) -> MathSpec:
     load_implementations(ms)
     load_types(ms, json)
     load_spaces(ms, json)
-    load_states(ms, json)
-    load_entities(ms, json)
+    load_states(ms, json, pattern=primary_pattern)
+    load_entities(ms, json, pattern=primary_pattern)
     load_boundary_actions(ms, json)
     load_control_actions(ms, json)
-    state_update_transmission_channels = load_mechanisms(ms, json)
+    state_update_transmission_channels = load_mechanisms(ms, json, pattern=primary_pattern)
     load_parameters(ms, json)
-    load_policies(ms, json)
-    load_stateful_metrics(ms, json)
+    load_policies(ms, json, pattern=primary_pattern)
+    load_stateful_metrics(ms, json, pattern=primary_pattern)
 
     stateful_metrics_map = {}
     for x in ms["Stateful Metrics"]:
