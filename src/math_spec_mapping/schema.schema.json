@@ -80,6 +80,21 @@
                         "$ref": "./schema.schema.json/#/definitions/Metric"
                     }
                 },
+                "pattern_metadata": {
+                    "type": "object",
+                    "properties": {
+                        "patterns": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of patterns in this spec"
+                        },
+                        "primary_pattern": {
+                            "type": ["string", "null"],
+                            "description": "Primary pattern for single-pattern specs"
+                        }
+                    },
+                    "additionalProperties": true
+                },
                 "Displays": {"type": "object",
                 "additionalProperties": false,
                 "properties": {
@@ -227,6 +242,10 @@
                     "type": "string",
                     "description": "The description of what the mechanism does"
                 },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
+                },
                 "constraints": {
                     "type": "array",
                     "description": "Any constraints which the mechanism must respect",
@@ -353,6 +372,10 @@
                     "type": "string",
                     "description": "Description of the policy"
                 },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
+                },
                 "constraints": {
                     "type": "array",
                     "description": "Any constraints which the policy must respect",
@@ -443,6 +466,10 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
                 },
                 "schema": {
                     "$ref": "./schema.schema.json/#/definitions/Schema"
@@ -559,6 +586,10 @@
                     "type": "string",
                     "description": "The name of the state"
                 },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
+                },
                 "variables": {
                     "type": "array",
                     "items": {
@@ -622,6 +653,10 @@
                 },
                 "notes": {
                     "type": "string"
+                },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
                 },
                 "metadata": {"type": "object"}
             },
@@ -710,6 +745,14 @@
                 "description": {
                     "type": "string"
                 },
+                "pattern": {
+                    "type": ["string", "null"],
+                    "description": "Pattern this component belongs to (e.g., 'strategic_interaction', 'open_games')"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Additional notes or implementation details"
+                },
                 "constraints": {
                     "type": "array",
                     "items": {}
@@ -748,7 +791,8 @@
             "type": "string",
             "enum": [
                 "Parallel",
-                "Stack"
+                "Stack",
+                "Composite"
             ],
             "title": "TypeEnum"
         },

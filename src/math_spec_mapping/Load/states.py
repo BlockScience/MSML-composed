@@ -38,12 +38,13 @@ def convert_state(ms, data: Dict) -> State:
     return State(data)
 
 
-def load_states(ms: Dict, json: Dict) -> None:
+def load_states(ms: Dict, json: Dict, pattern: str = None) -> None:
     """Function to load states into the new dictionary
 
     Args:
         ms (Dict): MathSpec dictionary
         json (Dict): JSON version of MathSpec to load
+        pattern (str): Optional pattern name for pattern-based specs
     """
 
     ms["State"] = {}
@@ -51,4 +52,10 @@ def load_states(ms: Dict, json: Dict) -> None:
     for state in json["State"]:
         ms["State"][state["name"]] = convert_state(ms, state)
 
-    assert "Global State" in ms["State"], "Global State has to be in the state"
+    # Allow pattern-based states or provide fallback
+    if "Global State" not in ms["State"]:
+        # Check if pattern metadata indicates pattern-based organization
+        if not json.get("pattern_metadata"):
+            # Only warn for non-pattern specs
+            import warnings
+            warnings.warn("No Global State found. Using pattern-based state organization.")

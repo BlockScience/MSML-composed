@@ -34,11 +34,13 @@ def convert_policy_options(data: Dict, ms) -> PolicyOption:
     return PolicyOption(data)
 
 
-def convert_policy(data: Dict, ms: Dict) -> Policy:
+def convert_policy(data: Dict, ms: Dict, pattern: str = None) -> Policy:
     """Function to convert dictionary to policy object
 
     Args:
         data (Dict): The data to convert
+        ms (Dict): MathSpec dictionary
+        pattern (str): Optional pattern name for pattern-aware resolution
 
     Returns:
         Policy: Policy object
@@ -58,7 +60,7 @@ def convert_policy(data: Dict, ms: Dict) -> Policy:
     assert type(data["domain"]) == tuple, "{} domain is not a tuple".format(
         data["name"]
     )
-    check_domain_codomain_spaces(data, ms)
+    check_domain_codomain_spaces(data, ms, pattern=pattern)
 
     if len(data["codomain"]) == 0:
         data["codomain"] = ("Empty Space",)
@@ -82,17 +84,19 @@ def convert_policy(data: Dict, ms: Dict) -> Policy:
     return Policy(data)
 
 
-def load_policies(ms: Dict, json: Dict) -> None:
+def load_policies(ms: Dict, json: Dict, pattern: str = None) -> None:
     """Function to load policies into the new dictionary
 
     Args:
         ms (Dict): MathSpec dictionary
         json (Dict): JSON version of MathSpec to load
+        pattern (str): Optional default pattern for components without explicit pattern
     """
 
     ms["Policies"] = {}
     for policy in json["Policies"]:
-        ms["Policies"][policy["name"]] = convert_policy(policy, ms)
+        component_pattern = policy.get("pattern", pattern)
+        ms["Policies"][policy["name"]] = convert_policy(policy, ms, pattern=component_pattern)
 
         key = policy["name"]
         for space in ms["Policies"][key].domain:
