@@ -11,6 +11,7 @@ class Block:
         self.codomain = data["codomain"]
         self.parameters_used = data["parameters_used"]
         self.metadata = data["metadata"]
+        self.pattern = data.get("pattern", None)  # Pattern this component belongs to
         if "metrics_used" in data:
             self.metrics_used = data["metrics_used"]
         else:

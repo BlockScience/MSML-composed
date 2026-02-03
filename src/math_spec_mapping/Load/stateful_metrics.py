@@ -61,12 +61,13 @@ def convert_stateful_metric(ms, data: Dict) -> StatefulMetricSet:
     return StatefulMetricSet(data)
 
 
-def load_stateful_metrics(ms: Dict, json: Dict) -> None:
+def load_stateful_metrics(ms: Dict, json: Dict, pattern: str = None) -> None:
     """Function to load stateful metrics into the new dictionary
 
     Args:
         ms (Dict): MathSpec dictionary
         json (Dict): JSON version of MathSpec to load
+        pattern (str): Optional pattern name for pattern-based specs
     """
 
     ms["Stateful Metrics"] = {}
